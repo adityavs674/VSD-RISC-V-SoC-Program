@@ -1,0 +1,74 @@
+System Info:-
+Fedora Workstation Latest Version
+RAM - 16 GB
+ROM - 82 GB alloted to Fedora
+
+Task description - Installing tools required for the program - YOSYS, IVERLOG, GKTWAVE
+Tool check (I already have iverilog and gtkwave installed due to a previous project for Tiny Tapout Risc V SoC)
+
+```console
+av@fedora:~$ yosys -V
+bash: yosys: command not found...
+Install package 'yosys' to provide command 'yosys'? [N/y] 
+
+av@fedora:~$ gtkwave -V
+GTKWave Analyzer v3.3.124 (w)1999-2025 BSI
+
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+av@fedora:~$ iverilog -V
+Icarus Verilog version 12.0 (stable) ()
+
+Copyright (c) 2000-2021 Stephen Williams (steve@icarus.com)
+
+
+
+YOSYS - 
+# 1. Update Fedora packages
+sudo dnf update -y
+
+# 2. Clone the Yosys repository
+git clone https://github.com/YosysHQ/yosys.git
+cd yosys
+
+# 3. Install required build tools and dependencies
+sudo dnf install -y \
+    make gcc clang bison flex readline-devel gawk tcl-devel libffi-devel \
+    git graphviz xdot pkgconf-pkg-config python3 boost-devel zlib-devel
+
+# 4. (Optional) Configure build for GCC
+make config-gcc
+
+# 5. Initialize submodules (abc is required)
+git submodule update --init --recursive
+
+# 6. Build Yosys
+make   # Use all CPU cores for faster build
+
+# 7. Install Yosys system-wide
+sudo make install
+
+  Build successful.
+
+[Makefile.conf] CONFIG := gcc
+mkdir -p /usr/local/bin
+cp yosys-abc yosys yosys-config yosys-filterlib yosys-smtbmc yosys-witness /usr/local/bin
+if [ -n "strip" ]; then  strip -S /usr/local/bin/yosys; fi
+if [ -n "strip" ]; then  strip /usr/local/bin/yosys-abc; fi
+if [ -n "strip" ]; then  strip /usr/local/bin/yosys-filterlib; fi
+mkdir -p /usr/local/share/yosys
+cp -r share/. /usr/local/share/yosys/.
+
+
+Updating GTKWAVE & IVERILOG
+
+av@fedora:~/yosys$ sudo dnf update iverilog
+[sudo] password for av: 
+Updating and loading repositories:
+Repositories loaded.
+Nothing to do.
+av@fedora:~/yosys$ sudo dnf update gtkwave
+Updating and loading repositories:
+Repositories loaded.
+Nothing to do.
